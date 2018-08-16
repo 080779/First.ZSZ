@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="pd-20">
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>权限名：</label>
+            <div class="formControls col-5">
+                <input type="text" class="input-text" value="" placeholder="" id="name" name="name" datatype="*2-16" nullmsg="权限名不能为空">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>描述：</label>
+            <div class="formControls col-5">
+                <input type="text" class="input-text" value="" placeholder="" id="description" name="description" datatype="*2-16" nullmsg="权限描述不能为空">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row cl">
+            <div class="col-9 col-offset-3">
+                <input class="btn btn-primary radius" type="button" id="btnSave" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+</div>
+@section FooterScript
+{
+<script type="text/javascript">
+    $(function () {
+        $("#btnSave").click(function () {
+            var name = $("#name").val();
+            var description = $("#description").val();
+            $.ajax({
+                type: "post", url: "/Permission/add", data: { name: name, description: description },
+                success: function (result) {
+                    parent.location.reload();
+                },
+                error: function () {
+                    alert("出错了");
+                }
+            });
+        });        
+    });
+</script>
+}

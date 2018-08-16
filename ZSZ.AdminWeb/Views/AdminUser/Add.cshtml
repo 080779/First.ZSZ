@@ -1,0 +1,95 @@
+﻿@model ZSZ.AdminWeb.Models.AdminUserAddDataModel
+@{
+    ViewBag.Title = "新增管理员";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="pd-20">
+    <form id="formAdd">
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>手机号：</label>
+            <div class="formControls col-5">
+                <input type="text" class="input-text" value="" placeholder="" id="phoneNum" name="phoneNum" datatype="m" nullmsg="手机号不能为空">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>管理员姓名：</label>
+            <div class="formControls col-5">
+                <input type="text" class="input-text" value="" placeholder="" id="name" name="name" datatype="*2-16" nullmsg="管理员姓名不能为空">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>初始密码：</label>
+            <div class="formControls col-5">
+                <input type="password" placeholder="密码" name="password" id="password" autocomplete="off" value="" class="input-text" datatype="*6-20" nullmsg="密码不能为空">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>确认密码：</label>
+            <div class="formControls col-5">
+                <input type="password" placeholder="确认新密码" autocomplete="off" class="input-text Validform_error" errormsg="您两次输入的新密码不一致！" datatype="*" nullmsg="请再输入一次新密码！" recheck="password" id="password1">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>邮箱：</label>
+            <div class="formControls col-5">
+                <input type="text" class="input-text" placeholder="" name="email" id="email" datatype="e" nullmsg="请输入邮箱！">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3">城市：</label>
+            <div class="formControls col-5">
+                <span class="select-box" style="width:150px;">
+                    <select class="select" name="cityId" size="1">
+                        <option>总部</option>
+                        @foreach (var city in Model.Citys)
+                        {
+                            <option value="@city.Id">@city.Name</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3">角色：</label>
+            <div class="formControls col-5">
+                @foreach (var role in Model.Roles)
+                {
+                    <label for="roleIds_@role.Id"><input type="checkbox" name="roleIds" value="@role.Id" id="roleIds_@role.Id" />@role.Name</label>
+                }
+            </div>
+        </div>       
+        <div class="row cl">
+            <div class="col-9 col-offset-3">
+                <input class="btn btn-primary radius" type="button" id="btnSave" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</div>
+@section FooterScript
+{
+<script type="text/javascript">
+    $(function () {        
+        var validForm = $("#formAdd").Validform({ tiptype: 2 });
+        $("#btnSave").click(function () {
+            if(validForm.check(false))
+            {
+                var data = $("#formAdd").serializeArray();
+                $.ajax({
+                    type: "post", url: "/AdminUser/add", data: data,
+                    success: function (result) {
+                        parent.location.reload();
+                    },
+                    error: function () {
+                        alert("出错了");
+                    }
+                });
+            }
+        });
+    });
+</script>
+}

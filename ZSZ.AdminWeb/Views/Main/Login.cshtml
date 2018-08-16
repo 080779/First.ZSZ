@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewBag.Title = "管理员登录";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<form class="form form-horizontal" id="formLogin">
+    <div class="row cl">
+        <label class="form-label col-3"><i class="Hui-iconfont">&#xe60d;</i></label>
+        <div class="formControls col-5">
+            <input id="phoneNum" name="phoneNum" type="text" placeholder="手机号" class="input-text" datatype="m" nullmsg="手机号不能为空">
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-3"><i class="Hui-iconfont">&#xe60e;</i></label>
+        <div class="formControls col-5">
+            <input id="password" name="password" type="password" placeholder="密码" class="input-text" datatype="*6-30" nullmsg="密码不能为空">
+        </div>
+    </div>
+    <div class="row cl">
+        <div class="formControls col-8 col-offset-3">
+            <input class="input-text size-L" type="text" name="verifyCode" placeholder="验证码" onblur="if(this.value==''){this.value='验证码:'}" onclick="if(this.value=='验证码:'){this.value='';}" value="验证码:" style="width:150px;">
+            <img src="~/Main/CreateVerifyCode" id="image"> <a id="change" href="javascript:;">看不清，换一张</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="formControls col-8 col-offset-3">
+            <label for="online">
+                <input type="checkbox" name="online" id="online" value="">
+                使我保持登录状态
+            </label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="formControls col-8 col-offset-3">
+            <input id="btnLogin" type="button" class="btn btn-success radius size-L" value="&nbsp;登&nbsp;&nbsp;&nbsp;&nbsp;录&nbsp;">
+        </div>
+    </div>
+</form>
+@section FooterScript
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#image,#change").click(function () {
+                $("#image").attr("src", "/Main/CreateVerifyCode?" + Math.random());
+            });
+            $("#image").click();
+            var validForm = $("#formLogin").Validform({ tiptype: 2 });            
+            $("#btnLogin").click(function () {
+                var formData = $("#formLogin").serializeArray();
+                if (validForm.check(false)) {
+                    $.ajax({
+                        type: "post", url: "/Main/Login", data: formData, dataType: "json",
+                        success: function (result) {
+                            if (result.status == "ok") {
+                                alert("登录成功");
+                            }
+                            else {
+                                alert("登录失败" + result.errorMsg);
+                                $("#image").click();
+                            }
+                        },
+                        error: function () {
+                            alert("网络错误");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

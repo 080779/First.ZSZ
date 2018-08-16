@@ -1,0 +1,121 @@
+﻿@{
+    ViewBag.Title = "注册";
+}
+<div class="headertwo clearfloat" id="header">
+    <a href="javascript:history.go(-1)" class="fl box-s"><i class="iconfont icon-arrow-l fl"></i></a>
+    <p class="fl">用户注册</p>
+</div>
+
+<div class="register clearfloat" id="main">
+    <ul>
+        <li class="clearfloat">
+            <p class="tit fl">手机号</p>
+            <input type="text" id="phoneNum" value="" class="shuru fl" placeholder="请输入手机号码" />
+        </li>
+        <li class="clearfloat">
+            <p class="tit fl">验证码</p>
+            <input type="text" id="message" value="" class="shuru shurutwo fl" placeholder="请输入短信验证码" />
+            <a href="#loginmodalt" id="modaltrigger">
+                <input type="button" id="btnMessage" value="获取短信验证码" class="btn fr" />
+            </a>
+        </li>
+        <li class="clearfloat">
+            <p class="tit fl">密码</p>
+            <input type="text" id="password" value="" class="shuru fl" placeholder="请设置密码" />
+        </li>
+        <li class="clearfloat">
+            <p class="tit fl">确认密码</p>
+            <input type="text" id="password1" value="" class="shuru fl" placeholder="请再次输入密码" />
+        </li>
+    </ul>
+    <a id="btnRegister" class="pay-btn clearfloat">
+        注册
+    </a>
+    <div class="bottom clearfloat">
+        <p class="fl">
+            已有账号？
+            <a href="~/Main/Login">立即登录</a>
+        </p>
+    </div>
+</div>
+
+<!--弹窗内容 star-->
+<div id="loginmodalt" class="box-s loginmodaltwo" style="display:none;">
+    <div class="top clearfloat box-s">
+        <p class="tit">请输入图片验证码</p>
+        <div class="xia clearfloat">
+            <input type="text" id="verifyCode" value="" class="yzm fl" placeholder="填写图片验证码" />
+            <span class="fl"><img id="resetImgCode" src="~/Main/CreateVerifyCode"/></span>
+            <i id="resetCode" class="iconfont icon-shuaxin fr"></i>
+        </div>
+    </div>
+    <form id="loginform">
+        <div class="center fl"><input type="button" class="hidemodal" value="取消" tabindex="3"></div>
+        <div class="center fl"><input type="button" id="btnCode" class="" value="确定" tabindex="3"></div>
+    </form>
+</div>
+<!--弹窗内容 end-->
+@section FooterScript
+{
+<script type="text/javascript" src="~/js/jquery.leanModal.min.js"></script>
+<script type="text/javascript">
+    $('#modaltrigger').leanModal({
+        top: 110,
+        overlay: 0.45,
+        closeButton: ".hidemodal"
+    }).click(function () {
+        $("#resetImgCode").attr("src", "/Main/CreateVerifyCode?code=" + Math.random());
+        $("#verifyCode").val("");
+    });
+    $(function () {
+        $("#resetImgCode,#resetCode").click(function () {
+            $("#resetImgCode").attr("src", "/Main/CreateVerifyCode?code=" + Math.random());
+        });        
+        $("#btnCode").click(function () {
+            var verifyCode = $("#verifyCode").val();
+            var phoneNum = $("#phoneNum").val();
+            $.ajax({
+                url: "/Main/PhoneMessage", type: "post", data: { verifyCode: verifyCode ,phoneNum:phoneNum},
+                success: function (result) {
+                    if(result.code=="0")
+                    {
+                        alert(result.msg);
+                        $("#lean_overlay").fadeOut(200);
+                        $("#loginmodalt").css({ "display": "none" })
+                    }
+                    else
+                    {
+                        alert(result.errorMsg);
+                        $("#resetImgCode").attr("src", "/Main/CreateVerifyCode?code=" + Math.random());
+                        $("#verifyCode").val("");
+                    }
+                },
+                error: function () {
+                    alert("网络错误");
+                }
+            });
+        });
+
+        $("#btnRegister").click(function () {
+            var phoneNum = $("#phoneNum").val();
+            var password = $("#password").val();
+            $.ajax({
+                url: "/Main/Register", type: "post", data: { phoneNum: phoneNum, password: password },
+                success: function (result) {
+                    if(result.status=="ok")
+                    {
+                        alert("注册成功");
+                    }
+                    else
+                    {
+                        alert(result.errorMsg);
+                    }
+                },
+                error: function () {
+                    alert("网络错误");
+                }
+            });
+        });
+    });
+</script>
+}

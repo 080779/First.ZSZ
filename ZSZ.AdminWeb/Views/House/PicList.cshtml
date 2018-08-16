@@ -1,0 +1,51 @@
+﻿@model ZSZ.AdminWeb.Models.HousePicUploadModel
+@{
+    ViewBag.Title = "图片列表";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/lightbox2/2.8.1/css/lightbox.css" rel="stylesheet" type="text/css">
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 图片管理 <span class="c-gray en">&gt;</span> 图片展示 <a class="btn btn-success radius r mr-20" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="pd-20">
+    <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick='batch_del()' class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a><a href="javascript:;" onclick="layer_show('添加图片', '/House/PicUpload/@Model.HouseId', '800', '500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加图片</a> </span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
+    <form id="formList">
+        <div class="portfolio-content">
+            <ul class="cl portfolio-area">
+                @foreach (var pic in Model.Pics)
+                {
+                    <li class="item">
+                        <div class="portfoliobox">
+                            <input class="checkbox" name="ids" type="checkbox" value="@pic.Id">
+                            <div class="picbox"><a href="@pic.Url" data-lightbox="gallery" data-title=""><img src="@pic.ThumbUrl"></a></div>
+                            <div class="textbox">客厅 </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </form>
+</div>
+@section FooterScript
+{
+<script type="text/javascript" src="~/lib/lightbox2/2.8.1/js/lightbox-plus-jquery.min.js"></script> 
+<script type="text/javascript">
+$(function(){
+    $.Huihover(".portfolio-area li");   
+});
+function batch_del() {
+    var formData = $("#formList").serializeArray();
+    layer.confirm('确认要删除吗？', function (index) {
+        $.ajax({
+            type: "post", url: "/House/PicDelete", data: formData,
+            success: function (result) {
+                if (result.status == "ok") {
+                    location.reload();
+                }
+            },
+            error: function () {
+                alert("网络错误");
+            }
+        });
+    });
+}
+</script>
+}

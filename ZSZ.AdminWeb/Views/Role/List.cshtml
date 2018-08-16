@@ -1,0 +1,76 @@
+﻿@model ZSZ.DTO.RoleDTO[]
+@{
+    ViewBag.Title = "角色列表";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 角色管理 <span class="c-gray en">&gt;</span> 角色列表 <a class="btn btn-success radius r mr-20" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="pd-20">
+        <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="batch_del(this)" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="    layer_show('添加角色', '/Role/Add', '800', '500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加角色</a></span> <span class="r">共有数据：<strong id="strong1">@Model.Count()</strong> 条</span> </div>
+        <form id="formList">
+            <table class="table table-border table-bordered table-bg">
+                <thead>
+                    <tr>
+                        <th scope="col" colspan="9">角色列表</th>
+                    </tr>
+                    <tr class="text-c">
+                        <th width="25"><input type="checkbox"></th>
+                        <th width="150">角色名</th>
+                        <th width="100">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var role in Model)
+                    {
+                        <tr class="text-c">
+                            <td><input type="checkbox" value="@role.Id" name="selectedIds"></td>
+                            <td>@role.Name</td>
+                            <td class="td-manage">
+                                <a title="编辑" href="javascript:;" onclick="layer_show('角色编辑','/Role/Edit/@role.Id','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+                                <a title="删除" href="javascript:;" onclick="role_del(this,@role.Id)" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
+    </div>
+@section FooterScript
+{
+<script type="text/javascript">
+    function role_del(obj, id) {        
+        layer.confirm('确认要删除吗？', function (index) {
+            $.ajax({
+                type: "post", url: "/Role/Delete", data: {id:id},dataTpye:"json",
+                success: function (result) {
+                    if (result.status == "ok") {
+                        $(obj).parents("tr").remove();
+                        layer.msg('已删除!', { icon: 1, time: 2000 });
+                    }
+                    else {
+                        layer.msg('删除失败!', { icon: 2, time: 2000 });
+                    }
+                },
+                error: function () {
+                    alert("错误");
+                }
+            });
+        });
+    }
+    function batch_del(obj) {
+        layer.confirm('确认要批量删除吗？', function () {
+            var dataList = $("#formList").serializeArray();
+            $.ajax({
+                type: "post", url: "/Role/BatchDelete", data: dataList, dataType: "json",
+                success: function (result) {
+                    if (result.status == "ok") {
+                        location.reload();
+                    }
+                },
+                error: function () {
+                    alert("错误");
+                }
+            });
+        });
+    }
+</script>
+}

@@ -1,0 +1,52 @@
+﻿@model ZSZ.DTO.PermissionDTO[]
+@{
+    ViewBag.Title = "新增角色";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="pd-20">
+    <form id="role_form">
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>角色名：</label>
+            <div class="formControls col-5">
+                <input type="text" class="input-text" value="" placeholder="" id="name" name="name" datatype="*1-16" nullmsg="角色名不能为空">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row cl">
+            <div class="col-12 col-4">
+                @foreach (var perm in Model)
+                {
+                    <label for="permissionIds_@perm.Id"><input type="checkbox" name="permissionIds" value="@perm.Id" id="permissionIds_@perm.Id" />@perm.Description</label>
+                }
+            </div>
+        </div>       
+        <div class="row cl">
+            <div class="col-9 col-offset-3">
+                <input class="btn btn-primary radius" type="button" id="btnSave" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</div>
+@section FooterScript
+{
+<script type="text/javascript">
+    $(function () {        
+        var validForm = $("#role_form").Validform({ tiptype: 2 });
+        $("#btnSave").click(function () {
+            if(validForm.check(false))
+            {
+                var data = $("#role_form").serializeArray();
+                $.ajax({
+                    type: "post", url: "/Role/add", data: data,
+                    success: function (result) {
+                        parent.location.reload();
+                    },
+                    error: function () {
+                        alert("出错了");
+                    }
+                });
+            }
+        });
+    });
+</script>
+}

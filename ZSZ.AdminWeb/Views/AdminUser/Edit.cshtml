@@ -1,0 +1,82 @@
+﻿@model ZSZ.AdminWeb.Models.AdminUserEditDataModel
+@{
+    ViewBag.Title = "新增管理员";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="pd-20">
+    <form id="formEdit">
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>手机号：</label>
+            <div class="formControls col-5">
+                <input type="hidden" name="id" value="@Model.AdminUser.Id" />
+                <input type="text" class="input-text" value="@Model.AdminUser.PhoneNum"  disabled="disabled" datatype="m" nullmsg="手机号不能为空">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>管理员姓名：</label>
+            <div class="formControls col-5">
+                <input type="text" class="input-text" value="@Model.AdminUser.Name" placeholder="" id="name" name="name" datatype="*2-16" nullmsg="管理员姓名不能为空">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3"><span class="c-red">*</span>邮箱：</label>
+            <div class="formControls col-5">
+                <input type="text" class="input-text" placeholder="" value="@Model.AdminUser.Email" name="email" id="email" datatype="e" nullmsg="请输入邮箱！">
+            </div>
+            <div class="col-4"> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3">城市：</label>
+            <div class="formControls col-5">
+                <span class="select-box" style="width:150px;">
+                    <select class="select" name="cityId" size="1">
+                        <option>总部</option>
+                        @foreach (var city in Model.Citys)
+                        {
+                            <option value="@city.Id" selected="@Model.AdminUser.CityId">@city.Name</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-3">角色：</label>
+            <div class="formControls col-5">
+                @foreach (var role in Model.Roles)
+                {
+                    <label for="roleIds_@role.Id"><input type="checkbox" name="roleIds" value="@role.Id" id="roleIds_@role.Id" checked="@Model.RoleIds.Select(u=>u.Id).Contains(role.Id)" />@role.Name</label>
+                }
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-9 col-offset-3">
+                <input class="btn btn-primary radius" type="button" id="btnSave" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</div>
+@section FooterScript
+{
+    <script type="text/javascript">
+    $(function () {
+        var validForm = $("#formEdit").Validform({ tiptype: 2 });
+        $("#btnSave").click(function () {
+            if(validForm.check(false))
+            {
+                var data = $("#formEdit").serializeArray();
+                $.ajax({
+                    type: "post", url: "/AdminUser/Edit", data: data,
+                    success: function (result) {
+                        parent.location.reload();
+                    },
+                    error: function () {
+                        alert("出错了");
+                    }
+                });
+            }
+        });
+    });
+    </script>
+}

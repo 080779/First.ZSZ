@@ -1,0 +1,28 @@
+﻿@model object
+@{
+    ViewBag.Title = "短信验证";
+}
+<div class="headertwo clearfloat" id="header">
+    <a href="javascript:history.go(-1)" class="fl box-s"><i class="iconfont icon-arrow-l fl"></i></a>
+    <p class="fl">短信验证</p>
+</div>
+
+<div class="modify clearfloat" id="main">
+    <ul>
+        <li class="clearfloat">
+            <input type="text" name="" id="" value="" placeholder="@Model" class="syzma fl" />
+            <a href="#" class="fr">发送验证码</a>
+        </li>
+        <li class="clearfloat">
+            <input type="text" name="" id="" value="" placeholder="请输入手机短信中的验证码" class="sname" />
+        </li>
+    </ul>
+    <a href="~/Main/ChangePassword" class="pay-btn clearfloat">
+        验证
+    </a>
+</div>
+@section FooterScript
+{ 
+    <script type="text/javascript">
+    </script>
+}
